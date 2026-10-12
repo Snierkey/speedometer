@@ -105,7 +105,7 @@ extern "C" void OnModLoad()
 {
     logger->SetTag("Speedometer");
 
-    pGTASA = aml->GetLib("libGTASA.so");
+    pGTASA = (uintptr_t)aml->GetLib("libGTASA.so");
     hGTASA = aml->GetLibHandle("libGTASA.so");
     if (!pGTASA || !hGTASA) { logger->Error("libGTASA not found"); return; }
 
@@ -120,7 +120,7 @@ extern "C" void OnModLoad()
     RenderFontBuffer  = (RenderFontBuffer_t) aml->GetSym(hGTASA, "_ZN5CFont16RenderFontBufferEv");
     pRsGlobal         = (int*)               aml->GetSym(hGTASA, "RsGlobal");
 
-    void* hudDraw = aml->GetSym(hGTASA, "_ZN4CHud4DrawEv");
+    void* hudDraw = (void*)aml->GetSym(hGTASA, "_ZN4CHud4DrawEv");
 
     if (!FindPlayerVehicle || !FindPlayerSpeed || !PrintString || !SetScale || !SetFontStyle ||
         !SetColor || !SetEdge || !SetJustify || !RenderFontBuffer || !hudDraw)
@@ -132,4 +132,3 @@ extern "C" void OnModLoad()
     aml->Hook(hudDraw, (void*)CHud_Draw_Hook, (void**)&CHud_Draw);
     logger->Info("Loaded");
 }
-
