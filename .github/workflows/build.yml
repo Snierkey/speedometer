@@ -1,0 +1,27 @@
+name: Build mod
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch AML headers
+        run: |
+          git clone --depth 1 https://github.com/RusJJ/AndroidModLoader.git aml
+          mkdir -p include
+          cp -r "$(dirname "$(find aml -name amlmod.h | head -n 1)")" include/mod
+
+      - name: Build
+        run: |
+          "$ANDROID_NDK_LATEST_HOME/ndk-build" NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=Android.mk NDK_APPLICATION_MK=Application.mk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: libGTASASpeedometer
+          path: libs/arm64-v8a/libGTASASpeedometer.so
+
