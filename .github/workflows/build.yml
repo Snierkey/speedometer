@@ -15,13 +15,20 @@ jobs:
           git clone --depth 1 https://github.com/RusJJ/AndroidModLoader.git aml
           mkdir -p include
           cp -r "$(dirname "$(find aml -name amlmod.h | head -n 1)")" include/mod
+          ls include/mod
+          ls
 
       - name: Build
         run: |
-          "$ANDROID_NDK_LATEST_HOME/ndk-build" NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=Android.mk NDK_APPLICATION_MK=Application.mk
+          set -o pipefail
+          "$ANDROID_NDK_LATEST_HOME/ndk-build" NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=Android.mk NDK_APPLICATION_MK=Application.mk 2>&1 | tee build.log
+
+      - name: Show errors
+        if: failure()
+        run: |
+          grep -E "error|Error|No such file|undefined" build.log | head -15 | while IFS= read -r line; do echo "::error::${line}"; done
 
       - uses: actions/upload-artifact@v4
         with:
           name: libGTASASpeedometer
           path: libs/arm64-v8a/libGTASASpeedometer.so
-

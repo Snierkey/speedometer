@@ -6,7 +6,6 @@
 
 MYMODCFG(net.local.gtasa.speedometer, Speedometer, 1.0, Local)
 
-//tweakables
 static const float POS_X_PERCENT = 0.90f;   // of screen width
 static const float POS_Y_PERCENT = 0.86f;   // of screen height
 static const float TEXT_SCALE_X  = 0.55f;   // in 640x448 units
@@ -101,7 +100,7 @@ static void CHud_Draw_Hook()
     DrawSpeedometer();
 }
 
-extern "C" void OnModLoad()
+ON_MOD_LOAD()
 {
     logger->SetTag("Speedometer");
 
